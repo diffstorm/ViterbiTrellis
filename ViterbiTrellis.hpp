@@ -4,8 +4,8 @@
 
     The ViterbiTrellis library is a single-header C++ implementation of the Viterbi algorithm, which is used for error correction and decoding of convolutional codes. This library provides a simple API to encode and decode byte arrays using convolutional codes, making it suitable for applications in digital communications and data transmission where reliability is critical.
 
-    @date 2024-08-18
-    @version 1.0
+    @date 2025-03-30
+    @version 1.1
     @author by Eray Ozturk | erayozturk1@gmail.com
     @url github.com/diffstorm
     @license GPL-3 License
@@ -35,10 +35,11 @@ public:
     {
         std::vector<uint8_t> encodedData;
         int state = 0;
+        int mask = (1 << (m_constraintLength - 1)) - 1;
 
         for(uint8_t bit : data)
         {
-            state = ((state << 1) | bit) & ((1 << (m_constraintLength - 1)) - 1);
+            int combined = (state << 1) | bit;
 
             for(int generator : m_generatorPolynomials)
             {
@@ -48,12 +49,14 @@ public:
                 {
                     if(generator & (1 << i))
                     {
-                        encodedBit ^= (state >> i) & 1;
+                        encodedBit ^= (combined >> i) & 1;
                     }
                 }
 
                 encodedData.push_back(encodedBit);
             }
+
+            state = combined & mask;
         }
 
         return encodedData;
@@ -70,8 +73,7 @@ public:
         int trellisSize = encodedData.size() / m_generatorPolynomials.size();
         std::vector<std::vector<int>> trellis(trellisSize + 1, std::vector<int>(numStates, std::numeric_limits<int>::max()));
         std::vector<std::vector<int>> path(trellisSize + 1, std::vector<int>(numStates, -1));
-        std::vector<uint8_t> decodedData;
-        trellis[0][0] = 0; // Initial state cost is 0
+        trellis[0][0] = 0;
 
         for(size_t i = 0; i < encodedData.size(); i += m_generatorPolynomials.size())
         {
@@ -84,7 +86,8 @@ public:
 
                 for(int inputBit = 0; inputBit < 2; ++inputBit)
                 {
-                    int nextState = ((state << 1) | inputBit) & (numStates - 1);
+                    int combined = (state << 1) | inputBit;
+                    int nextState = combined & (numStates - 1);
                     int cost = trellis[i / m_generatorPolynomials.size()][state];
                     int segmentCost = 0;
 
@@ -96,7 +99,7 @@ public:
                         {
                             if(m_generatorPolynomials[j] & (1 << k))
                             {
-                                expectedBit ^= (nextState >> k) & 1;
+                                expectedBit ^= (combined >> k) & 1;
                             }
                         }
 
@@ -117,11 +120,25 @@ public:
             }
         }
 
+        // Find the state with the minimal cost in the last step
         int state = 0;
+        int minCost = trellis[trellisSize][0];
+
+        for(int s = 1; s < numStates; ++s)
+        {
+            if(trellis[trellisSize][s] < minCost)
+            {
+                minCost = trellis[trellisSize][s];
+                state = s;
+            }
+        }
+
+        // Traceback to recover the decoded bits
+        std::vector<uint8_t> decodedData;
 
         for(size_t i = trellisSize; i-- > 0;)
         {
-            decodedData.push_back((path[i + 1][state] >> (m_constraintLength - 2)) & 1);
+            decodedData.push_back(state & 1); // LSB of current state is the decoded bit
             state = path[i + 1][state];
         }
 

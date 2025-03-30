@@ -1,5 +1,6 @@
 import random
 import itertools
+import sys
 
 def generate_polynomial(degree):
     """Generate a random polynomial of a given degree."""
@@ -41,3 +42,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    sys.exit(0)

@@ -4,11 +4,15 @@
 
 #include "ViterbiTrellis.hpp"
 
-void printVector(const char *title, const std::vector<uint8_t>& data) {
+void printVector(const char *title, const std::vector<uint8_t> &data)
+{
     std::cout << title << " : ";
-	for (uint8_t bit : data) {
+
+    for(uint8_t bit : data)
+    {
         std::cout << static_cast<int>(bit);
     }
+
     std::cout << std::endl;
 }
 
@@ -29,26 +33,22 @@ std::vector<uint8_t> generate_random_vector(size_t size)
 
 int main()
 {
+    int ret = 1;
     std::vector<int> generatorPolynomials = { 0b111, 0b101 }; // Generator polynomials
     ViterbiTrellis viterbi(3, generatorPolynomials);
-#if 1
-    std::vector<uint8_t> data = { 1, 0, 1 }; // Data
-#else
     size_t size = 10;
     std::vector<uint8_t> data = generate_random_vector(size);
-#endif
-	printVector("Data", data);
-
+    printVector("Data", data);
     std::vector<uint8_t> encodedData = viterbi.encode(data);
     printVector("Encoded Data", encodedData);
-
     std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
-	printVector("Decoded Data", decodedData);
+    printVector("Decoded Data", decodedData);
 
     if(std::equal(data.begin(), data.end(), decodedData.begin()))
     {
+        ret = 0;
         std::cout << "Data and decoded-data are matching" << std::endl;
     }
 
-    return 0;
+    return ret;
 }

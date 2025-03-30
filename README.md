@@ -159,6 +159,48 @@ To run the unit tests, use:
 ./ViterbiTrellisTest
 ```
 
+## Helper Scripts
+The project includes **helper scripts** (in both Python and C++) to assist with generating convolutional code polynomials and calculating key parameters for the ViterbiTrellis library. These scripts serve the same purpose and share identical functionality, but are provided in two languages for flexibility.
+
+### Key Functions & Parameters 
+Both helpers provide the following core functionality:  
+
+1. **Polynomial Generation**  
+   - **`generate_polynomial(degree)`**:  
+     Generates a polynomial of the specified `degree` with randomized coefficients (the highest-degree term is always 1).  
+     - Example: `degree=3` ? `[1, 0, 1, 1]` (represents \(1 + x^2 + x^3\)).  
+
+   - **`generate_polynomials(degree, count)`**:  
+     Generates `count` polynomials of the given `degree`.  
+
+2. **Parameter Calculation**  
+   - **`calculate_parameters(...)`**:  
+     Computes the **code rate** (\(R = 1/m\), where \(m\) is the number of generator polynomials).  
+
+#### Common Parameters:  
+- **`constraint_length` (\(K\))**:  
+  Memory depth of the encoder (e.g., \(K=3\) means the encoder uses 2 previous bits).  
+- **`generator_polynomials`**:  
+  List of polynomials defining how input bits are combined (e.g., `[0b111, 0b101]` for polynomials \(1 + x + x^2\) and \(1 + x^2\)).  
+- **`data_length`**:  
+  Length of input data (in bytes).  
+- **`error_bits`**:  
+  Maximum number of correctable errors.  
+
+### Usage 
+- **Python**:  
+  ```bash
+  python3 helper.py
+  ```
+- **C++**:  
+  ```bash
+  ./helper
+  ```
+
+### Why Two Versions?
+- **Python**: Quick prototyping and easy modification.  
+- **C++**: Seamless integration with the ViterbiTrellis library for consistency.  
+
 ## :snowman: Author
 Eray Öztürk ([@diffstorm](https://github.com/diffstorm))
 
