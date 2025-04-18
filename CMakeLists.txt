@@ -1,3 +1,7 @@
+#
+# ViterbiTrellis library cmake
+# Copyright (c) 2025 Eray Ozturk <erayozturk1@gmail.com>
+#
 cmake_minimum_required(VERSION 3.10)
 project(ViterbiTrellis)
 
@@ -8,9 +12,14 @@ add_executable(ViterbiTrellis main.cpp)
 add_executable(helper helper.cpp)
 
 enable_testing()
-add_subdirectory(googletest)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-add_executable(ViterbiTrellisTest ViterbiTrellis_test.cpp)
-target_link_libraries(ViterbiTrellisTest gtest gtest_main)
-add_test(NAME ViterbiTrellisTest COMMAND ViterbiTrellisTest)
+find_package(GTest REQUIRED)
+add_executable(ViterbiTrellisTest ViterbiTrellisTest.cpp)
+target_link_libraries(
+    ViterbiTrellisTest
+    PRIVATE 
+    ViterbiTrellis 
+    GTest::GTest 
+    GTest::Main
+)
+include(GoogleTest)
+gtest_discover_tests(ViterbiTrellisTest)
