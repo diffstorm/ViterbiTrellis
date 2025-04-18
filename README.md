@@ -1,10 +1,11 @@
-# ViterbiTrellis C++ Library
+# ViterbiTrellis C++ Library [![Awesome](https://awesome.re/badge.svg)](https://github.com/diffstorm/ViterbiTrellis)
 
 [![Build Status](https://github.com/diffstorm/ViterbiTrellis/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/diffstorm/ViterbiTrellis/actions)
 [![License](https://img.shields.io/github/license/diffstorm/ViterbiTrellis)](https://github.com/diffstorm/ViterbiTrellis/blob/main/LICENSE)
 [![Language](https://img.shields.io/github/languages/top/diffstorm/ViterbiTrellis)](https://github.com/diffstorm/ViterbiTrellis)
-
-## Overview
+[![Code Coverage](https://codecov.io/gh/diffstorm/ViterbiTrellis/branch/main/graph/badge.svg)](https://codecov.io/gh/diffstorm/ViterbiTrellis)
+![GitHub Stars](https://img.shields.io/github/stars/diffstorm/ViterbiTrellis?style=social)
+![Platforms](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey)
 
 The **ViterbiTrellis** library is a single-header C++ implementation of the Viterbi algorithm, which is used for error correction and decoding of convolutional codes. This library provides a simple API to encode and decode byte arrays using convolutional codes, making it suitable for applications in digital communications and data transmission where reliability is critical.
 
@@ -136,7 +137,6 @@ int main() {
 
 ```sh
 git clone https://github.com/diffstorm/ViterbiTrellis.git
-git submodule update --init --recursive
 mkdir -p build
 cd build
 cmake ..
