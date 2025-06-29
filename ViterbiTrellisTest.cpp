@@ -122,6 +122,109 @@ TEST(ViterbiTrellisTest, LastBitErrorCorrectionTest)
     ASSERT_EQ(decodedData, originalData); // Should correct the error in the last bit
 }
 
+// Test case for encoding and decoding an empty data vector
+TEST(ViterbiTrellisTest, EmptyDataTest)
+{
+    std::vector<int> generatorPolynomials = {0b111, 0b101};
+    ViterbiTrellis viterbi(3, generatorPolynomials);
+    std::vector<uint8_t> originalData = {};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    ASSERT_TRUE(encodedData.empty());
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_TRUE(decodedData.empty());
+}
+
+// Test case for encoding and decoding data with all zeros
+TEST(ViterbiTrellisTest, AllZerosDataTest)
+{
+    std::vector<int> generatorPolynomials = {0b111, 0b101};
+    ViterbiTrellis viterbi(3, generatorPolynomials);
+    std::vector<uint8_t> originalData = {0, 0, 0, 0, 0};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> expectedEncodedData = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    ASSERT_EQ(encodedData, expectedEncodedData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
+// Test case for encoding and decoding data with all ones
+TEST(ViterbiTrellisTest, AllOnesDataTest)
+{
+    std::vector<int> generatorPolynomials = {0b111, 0b101};
+    ViterbiTrellis viterbi(3, generatorPolynomials);
+    std::vector<uint8_t> originalData = {1, 1, 1, 1, 1};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> expectedEncodedData = {1, 1, 0, 1, 1, 0, 1, 0, 1, 0};
+    ASSERT_EQ(encodedData, expectedEncodedData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
+// Test case for different constraint lengths (K=1)
+TEST(ViterbiTrellisTest, ConstraintLengthOneTest)
+{
+    std::vector<int> generatorPolynomials = {0b1};
+    ViterbiTrellis viterbi(1, generatorPolynomials);
+    std::vector<uint8_t> originalData = {1, 0, 1, 1, 0};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> expectedEncodedData = {1, 0, 1, 1, 0};
+    ASSERT_EQ(encodedData, expectedEncodedData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
+// Test case for different constraint lengths (K=2)
+TEST(ViterbiTrellisTest, ConstraintLengthTwoTest)
+{
+    std::vector<int> generatorPolynomials = {0b11, 0b10};
+    ViterbiTrellis viterbi(2, generatorPolynomials);
+    std::vector<uint8_t> originalData = {1, 0, 1, 1, 0};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> expectedEncodedData = {1, 0, 1, 1, 1, 0, 0, 1, 1, 1};
+    ASSERT_EQ(encodedData, expectedEncodedData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
+// Test case for different constraint lengths (K=4)
+TEST(ViterbiTrellisTest, ConstraintLengthFourTest)
+{
+    std::vector<int> generatorPolynomials = {0b1111, 0b1010};
+    ViterbiTrellis viterbi(4, generatorPolynomials);
+    std::vector<uint8_t> originalData = {1, 0, 1, 1, 0};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> expectedEncodedData = {1, 0, 1, 1, 0, 0, 1, 0, 0, 1};
+    ASSERT_EQ(encodedData, expectedEncodedData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
+// Test case for invalid constraint length (<= 0) in constructor
+TEST(ViterbiTrellisTest, ConstructorInvalidConstraintLengthTest)
+{
+    std::vector<int> generatorPolynomials = {0b111, 0b101};
+    EXPECT_THROW(ViterbiTrellis viterbi(0, generatorPolynomials), std::invalid_argument);
+    EXPECT_THROW(ViterbiTrellis viterbi(-1, generatorPolynomials), std::invalid_argument);
+}
+
+// Test case for empty generator polynomials in constructor
+TEST(ViterbiTrellisTest, ConstructorEmptyGeneratorPolynomialsTest)
+{
+    std::vector<int> generatorPolynomials = {};
+    EXPECT_THROW(ViterbiTrellis viterbi(3, generatorPolynomials), std::invalid_argument);
+}
+
+// Test case for a longer data sequence
+TEST(ViterbiTrellisTest, LongDataSequenceTest)
+{
+    std::vector<int> generatorPolynomials = {0b111, 0b101};
+    ViterbiTrellis viterbi(3, generatorPolynomials);
+    std::vector<uint8_t> originalData = {1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1};
+    std::vector<uint8_t> encodedData = viterbi.encode(originalData);
+    std::vector<uint8_t> decodedData = viterbi.decode(encodedData);
+    ASSERT_EQ(decodedData, originalData);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

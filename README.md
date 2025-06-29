@@ -17,7 +17,7 @@ The **ViterbiTrellis** library is a single-header C++ implementation of the Vite
 
 ## Viterbi Trellis Theory
 
-The Viterbi algorithm is a dynamic programming algorithm used to find the most likely sequence of hidden states—called the Viterbi path—that results in a sequence of observed events, especially in the context of Markov information sources and hidden Markov models. In digital communications, it is used to decode convolutional codes, which are a type of error-correcting code. 
+The Viterbi algorithm is a dynamic programming algorithm used to find the most likely sequence of hidden statesâ€”called the Viterbi pathâ€”that results in a sequence of observed events, especially in the context of Markov information sources and hidden Markov models. In digital communications, it is used to decode convolutional codes, which are a type of error-correcting code. 
 
 ### Convolutional Codes
 
@@ -25,7 +25,7 @@ Convolutional codes are a type of error-correcting code where each input bit inf
 
 ### Trellis Diagram
 
-A Trellis diagram represents the possible states and transitions of a convolutional code. Each state corresponds to a possible state of the shift registers, and each transition represents the generation of a bit based on the input bit and the current state. The Viterbi algorithm traverses this Trellis to find the most likely path, representing the most likely transmitted sequence.
+A Trellis diagram represents the possible states and transitions of a convolutional code. Each state corresponds to a possible state of the shift registers, and each transition represents the generation of a bit based on the input bit and the current state. The Viterbi algorithm traverses this Trellis to find the most likely path, representing the most likely transmitted sequence. During decoding, the library also tracks the input bit that led to each state, enabling the reconstruction of the original data.
 
 ## Limitations
 
@@ -131,7 +131,7 @@ int main() {
 ### Building
 
 1. Install [CMake](https://cmake.org/).
-2. Install [Google Test](https://github.com/google/googletest).
+2. Install [Google Test](https://github.com/google/googletest). (e.g., `sudo apt-get install libgtest-dev` on Debian/Ubuntu-based systems).
 3. Clone the repository.
 4. Navigate to the project directory.
 
@@ -202,7 +202,7 @@ Both helpers provide the following core functionality:
 - **C++**: Seamless integration with the ViterbiTrellis library for consistency.  
 
 ## :snowman: Author
-Eray Öztürk ([@diffstorm](https://github.com/diffstorm))
+Eray Ã–ztÃ¼rk ([@diffstorm](https://github.com/diffstorm))
 
 ## LICENSE
 This project is licensed under the [GPL-3 License](LICENSE) - see the LICENSE file for details.

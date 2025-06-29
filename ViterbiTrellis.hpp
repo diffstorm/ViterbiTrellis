@@ -73,6 +73,7 @@ public:
         int trellisSize = encodedData.size() / m_generatorPolynomials.size();
         std::vector<std::vector<int>> trellis(trellisSize + 1, std::vector<int>(numStates, std::numeric_limits<int>::max()));
         std::vector<std::vector<int>> path(trellisSize + 1, std::vector<int>(numStates, -1));
+        std::vector<std::vector<uint8_t>> pathInputBits(trellisSize + 1, std::vector<uint8_t>(numStates, 0));
         trellis[0][0] = 0;
 
         for(size_t i = 0; i < encodedData.size(); i += m_generatorPolynomials.size())
@@ -115,31 +116,33 @@ public:
                     {
                         trellis[i / m_generatorPolynomials.size() + 1][nextState] = cost;
                         path[i / m_generatorPolynomials.size() + 1][nextState] = state;
+                        pathInputBits[i / m_generatorPolynomials.size() + 1][nextState] = inputBit;
                     }
                 }
             }
         }
 
         // Find the state with the minimal cost in the last step
-        int state = 0;
-        int minCost = trellis[trellisSize][0];
+        int finalState = 0;
+        int minCost = std::numeric_limits<int>::max();
 
-        for(int s = 1; s < numStates; ++s)
+        for(int s = 0; s < numStates; ++s)
         {
             if(trellis[trellisSize][s] < minCost)
             {
                 minCost = trellis[trellisSize][s];
-                state = s;
+                finalState = s;
             }
         }
 
         // Traceback to recover the decoded bits
         std::vector<uint8_t> decodedData;
+        int currentState = finalState;
 
         for(size_t i = trellisSize; i-- > 0;)
         {
-            decodedData.push_back(state & 1); // LSB of current state is the decoded bit
-            state = path[i + 1][state];
+            decodedData.push_back(pathInputBits[i + 1][currentState]);
+            currentState = path[i + 1][currentState];
         }
 
         std::reverse(decodedData.begin(), decodedData.end());
